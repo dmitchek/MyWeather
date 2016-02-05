@@ -3,7 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:padding="50dp">
 
     <TextView
             android:layout_width="wrap_content"
@@ -22,11 +23,11 @@
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Existing User"
-            android:id="@+id/button" android:layout_gravity="center_horizontal"/>
+            android:text="Get Weather"
+            android:id="@+id/get_weather" android:layout_gravity="center_horizontal"/>
     <Button
             android:layout_width="112dp"
             android:layout_height="wrap_content"
-            android:text="New User"
-            android:id="@+id/button2" android:layout_gravity="center_horizontal"/>
+            android:text="Add User"
+            android:id="@+id/newuser" android:layout_gravity="center_horizontal"/>
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.example.MyWeather.data;
+package com.example.MyWeather.database;
 
 import android.provider.BaseColumns;
 

@@ -1,9 +1,11 @@
-package com.example.MyWeather.data;
+package com.example.MyWeather.adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.example.MyWeather.database.UsersContract;
+import com.example.MyWeather.database.UsersDBHelper;
 
 /**
  * Created by dave on 2/3/16.
@@ -17,14 +19,11 @@ public class UsersAdapter {
     public void open(Context context)
     {
         mUsersDBHelper = new UsersDBHelper(context);
-        mDBWrite = mUsersDBHelper.getWritableDatabase();
-        mDBRead  = mUsersDBHelper.getReadableDatabase();
     }
 
     public void close()
     {
-        mDBRead.close();
-        mDBWrite.close();
+        mUsersDBHelper.close();
     }
 
     public long insertNewUser(String name, String locations)
@@ -35,7 +34,7 @@ public class UsersAdapter {
         values.put(UsersContract.UsersEntry.COLUMN_NAME_LOCATIONS, locations);
 
         // Insert the new row, returning the primary key value of the new row
-        return mDBWrite.insert(
+        return mUsersDBHelper.getWritableDatabase().insert(
                 UsersContract.UsersEntry.TABLE_NAME,
                 null,
                 values);
@@ -45,11 +44,18 @@ public class UsersAdapter {
     {
         String [] columns = {UsersContract.UsersEntry.COLUMN_NAME_LOCATIONS};
         String [] selection = {name};
-        Cursor cursor =   mDBRead.query(UsersContract.UsersEntry.TABLE_NAME,
+        Cursor cursor =   mUsersDBHelper.getReadableDatabase().query(UsersContract.UsersEntry.TABLE_NAME,
                                     columns,
-                                    "name = ?",
+                                    UsersContract.UsersEntry.COLUMN_NAME_NAME + "=?",
                                     selection, null, null, null);
 
-        return cursor.getCount() > 0 ?  cursor.getString(0) : null;
+        if(cursor.getCount() > 0)
+        {
+            cursor.moveToFirst();
+            return cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_NAME_LOCATIONS));
+        }
+        else
+            return null;
     }
+
 }

@@ -1,9 +1,8 @@
-package com.example.MyWeather.data;
+package com.example.MyWeather.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.MyWeather.data.UsersContract;
 
 /**
  * Created by dave on 2/3/16.
