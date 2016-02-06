@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.example.MyWeather.R;
 import com.example.MyWeather.adapter.WeatherAdapter;
@@ -18,23 +19,19 @@ import java.util.Map;
  */
 public class WeatherActivity extends Activity {
 
-    WeatherAdapter mWeatherAdapter;
+    WeatherTask mWeatherTask;
     private String mLocation;
 
     private class OnWeatherDataListener implements WeatherTask.OnDataListener
     {
         @Override
-        public void populate(WeatherData data) {
+        public void populate(WeatherData [] data) {
             Log.d("DKM", "Data received!");
 
-            ((TextView)findViewById(R.id.currTemp)).setText(String.valueOf(data.main.temp));
-            ((TextView)findViewById(R.id.hilo)).setText(String.valueOf(data.main.temp_min) + "/" +
-                                                         String.valueOf(data.main.temp_max));
+            WeatherAdapter adapter = new WeatherAdapter(getApplicationContext(), R.layout.weather_info, data);
 
-            ((TextView)findViewById(R.id.description)).setText(data.weather.main);
-            ((TextView)findViewById(R.id.descriptionDetail)).setText(data.weather.description);
-            ((TextView)findViewById(R.id.location)).setText(mLocation);
-
+            ListView list = (ListView)findViewById(R.id.weather_list);
+            list.setAdapter(adapter);
         }
     }
 
@@ -43,7 +40,7 @@ public class WeatherActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.weather_info);
+        setContentView(R.layout.weather);
 
         Intent intent = getIntent();
 
@@ -52,9 +49,7 @@ public class WeatherActivity extends Activity {
 
         // Get weather for given location
         mWeatherDataListener = new OnWeatherDataListener();
-        mWeatherAdapter = new WeatherAdapter();
-        mWeatherAdapter.setOnWeatherDataListener(mWeatherDataListener);
-        mWeatherAdapter.getWeatherFromZip(mLocation);
-
+        mWeatherTask = new WeatherTask(getApplicationContext());
+        mWeatherTask.fetchWeatherData(mLocation, mWeatherDataListener);
     }
 }

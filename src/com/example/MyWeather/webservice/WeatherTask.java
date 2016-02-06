@@ -1,5 +1,6 @@
 package com.example.MyWeather.webservice;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import com.example.MyWeather.data.WeatherData;
 import com.example.MyWeather.data.WeatherParser;
@@ -10,9 +11,10 @@ import org.json.JSONObject;
 /**
  * Created by dmitchell on 2/4/2016.
  */
-public class WeatherTask extends AsyncTask<String, String, String> {
+public class WeatherTask extends AsyncTask<String, String, JSONObject> {
 
-        private static final String URI = "http://api.openweathermap.org/data/2.5/weather";
+        private Context mContext;
+        //private static final String URI = "http://api.openweathermap.org/data/2.5/weather";
 
         private static final String TEST_DATA = "{\"coord\":{\"lon\":-84.45,\"lat\":38.05}," +
                 "\"weather\":[{\"id\":800,\"main\":\"Clear\",\"description\":\"Sky is Clear\",\"icon\":\"01n\"}]," +
@@ -21,9 +23,14 @@ public class WeatherTask extends AsyncTask<String, String, String> {
                 "\"grnd_level\":1009.88},\"wind\":{\"speed\":5.23,\"deg\":302.003},\"clouds\":{\"all\":0},\"dt\":1454643104,\"sys\":{\"message\":0.0044," +
                 "\"country\":\"US\",\"sunrise\":1454675938,\"sunset\":1454713504},\"id\":4291564,\"name\":\"Fayette County\",\"cod\":200}";
 
+        public WeatherTask(Context context)
+        {
+            mContext = context;
+        }
+
         public interface OnDataListener
         {
-            public void populate(WeatherData data);
+            public void populate(WeatherData [] data);
         }
 
         OnDataListener mOnDataListener;
@@ -34,20 +41,27 @@ public class WeatherTask extends AsyncTask<String, String, String> {
             execute(params);
         }
 
-        protected String doInBackground(String... params)
+        protected JSONObject doInBackground(String... params)
         {
+            //return FetchWeatherInfo.getJSON(mContext, params[0]);
 
-            return TEST_DATA;
+            try
+            {
+                JSONObject result = new JSONObject(TEST_DATA);
+                return result;
+
+            }catch(JSONException e)
+            {
+                return null;
+            }
+
         }
 
-        protected void onPostExecute(String result)
+        protected void onPostExecute(JSONObject result)
         {
-            JSONObject data;
-
-            try {
-                data = new JSONObject(result);
-                mOnDataListener.populate(WeatherParser.getWeatherData(data));
-            }
-            catch(JSONException e){}
+            WeatherData [] data = new WeatherData[2];
+            data[0] = WeatherParser.getWeatherData(result);
+            data[1] = WeatherParser.getWeatherData(result);
+            mOnDataListener.populate(data);
         }
 };
