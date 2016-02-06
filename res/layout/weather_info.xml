@@ -4,6 +4,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="30dp"
         android:weightSum="1">
     <RelativeLayout
             android:layout_width="match_parent"
@@ -13,16 +14,16 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="location:"
-                android:id="@+id/textView7"
+                android:id="@+id/locationText"
                 android:layout_gravity="right"
-                android:layout_toStartOf="@+id/textView6"
+                android:layout_toStartOf="@+id/location"
                 android:layout_alignParentTop="true"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="40508"
-                android:id="@+id/textView6"
+                android:id="@+id/location"
                 android:layout_gravity="right"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"/>
@@ -31,8 +32,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Dave"
-                android:id="@+id/textView5"
-                android:layout_alignBottom="@+id/textView7"
+                android:id="@+id/user"
+                android:layout_alignBottom="@+id/location"
                 android:layout_alignParentStart="true"/>
     </RelativeLayout>
     <TextView
@@ -40,19 +41,26 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="35"
-            android:id="@+id/textView"/>
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Clear"
-            android:id="@+id/textView2"/>
+            android:id="@+id/currTemp"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="hi/lo"
-            android:id="@+id/textView3"/>
+            android:id="@+id/hilo"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Clear"
+            android:id="@+id/description"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="description"
+            android:id="@+id/descriptionDetail"/>
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

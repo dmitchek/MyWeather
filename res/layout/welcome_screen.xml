@@ -13,21 +13,17 @@
             android:text="My Weather"
             android:id="@+id/textView" android:layout_gravity="center_horizontal"/>
     <EditText
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="user name"
+            android:hint="location"
             android:ems="10"
-            android:id="@+id/username"
+            android:id="@+id/location"
             android:layout_gravity="center_horizontal"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get Weather"
             android:id="@+id/get_weather" android:layout_gravity="center_horizontal"/>
-    <Button
-            android:layout_width="112dp"
-            android:layout_height="wrap_content"
-            android:text="Add User"
-            android:id="@+id/newuser" android:layout_gravity="center_horizontal"/>
+
 </LinearLayout>

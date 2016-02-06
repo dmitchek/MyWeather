@@ -5,16 +5,32 @@ package com.example.MyWeather.data;
  */
 public class WeatherData {
 
-    private static final String TAG_WEATHER = "weather";
-    private static final String TAG_MAIN = "main";
-    private static final String TAG_TEMP = "temp";
-    private static final String TAG_TEMP_MIN = "temp_min";
-    private static final String TAG_MAIN_MAX = "temp_max";
-    private static final String TAG_NAME = "name";
+    public static class Weather
+    {
+        public int id;
+        public String main;
+        public String description;
+        public String icon;
+    }
 
-    public String weather;
-    public double temp;
-    public double temp_min;
-    public double temp_max;
+    public static class Main
+    {
+        public double temp;
+        public double pressure;
+        public int humidity;
+        public double temp_min;
+        public double temp_max;
+    }
 
+    public static class Wind
+    {
+        public double speed;
+        public double deg;
+    }
+
+    public Weather weather;
+    public Main main;
+    public Wind wind;
+    public int id;
+    public String name;
 }
