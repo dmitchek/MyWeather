@@ -9,15 +9,7 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="34dp">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="location:"
-                android:id="@+id/locationText"
-                android:layout_gravity="right"
-                android:layout_toStartOf="@+id/location"
-                android:layout_alignParentTop="true"/>
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,4 +63,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/imageView" android:layout_weight="0.86"/>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+                android:id="@+id/previous_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="previous"/>
+
+        <Button
+                android:id="@+id/next_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="next"/>
+    </RelativeLayout>
 </LinearLayout>

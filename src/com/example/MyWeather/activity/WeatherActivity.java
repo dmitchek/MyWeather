@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.MyWeather.R;
@@ -11,6 +13,9 @@ import com.example.MyWeather.adapter.WeatherAdapter;
 import com.example.MyWeather.data.WeatherData;
 import com.example.MyWeather.webservice.WeatherTask;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +26,11 @@ public class WeatherActivity extends Activity {
 
     WeatherTask mWeatherTask;
     private String mLocation;
+    private int mCurrentPosition;
+    private ArrayList<WeatherData> mLocationData;
+
+    private static final int RIGHT = 1;
+    private static final int LEFT = -1;
 
     private class OnWeatherDataListener implements WeatherTask.OnDataListener
     {
@@ -28,10 +38,8 @@ public class WeatherActivity extends Activity {
         public void populate(WeatherData [] data) {
             Log.d("DKM", "Data received!");
 
-            WeatherAdapter adapter = new WeatherAdapter(getApplicationContext(), R.layout.weather_info, data);
-
-            ListView list = (ListView)findViewById(R.id.weather_list);
-            list.setAdapter(adapter);
+            mLocationData = new ArrayList<WeatherData>(Arrays.asList(data));
+            loadDataIntoView(mLocationData.get(mCurrentPosition));
         }
     }
 
@@ -40,7 +48,7 @@ public class WeatherActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.weather);
+        setContentView(R.layout.weather_info);
 
         Intent intent = getIntent();
 
@@ -51,5 +59,61 @@ public class WeatherActivity extends Activity {
         mWeatherDataListener = new OnWeatherDataListener();
         mWeatherTask = new WeatherTask(getApplicationContext());
         mWeatherTask.fetchWeatherData(mLocation, mWeatherDataListener);
+
+        mCurrentPosition = 0;
+
+        Button next = (Button)findViewById(R.id.next_location);
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadView(RIGHT);
+            }
+        });
+
+        Button previous = (Button)findViewById(R.id.previous_location);
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadView(LEFT);
+            }
+        });
+        previous.setEnabled(false);
+    }
+
+    private void loadView(int direction)
+    {
+        int newPosition = mCurrentPosition + direction;
+        if((newPosition < mLocationData.size()) && (newPosition >= 0))
+        {
+            mCurrentPosition = newPosition;
+            loadDataIntoView(mLocationData.get(mCurrentPosition));
+        }
+
+        if(mCurrentPosition == 0)
+        {
+            findViewById(R.id.previous_location).setEnabled(false);
+            findViewById(R.id.next_location).setEnabled(true);
+        }
+        else if(mCurrentPosition == (mLocationData.size()-1))
+        {
+            findViewById(R.id.previous_location).setEnabled(true);
+            findViewById(R.id.next_location).setEnabled(false);
+        }
+        else
+        {
+            findViewById(R.id.previous_location).setEnabled(true);
+            findViewById(R.id.next_location).setEnabled(true);
+        }
+    }
+
+    private void loadDataIntoView(WeatherData data)
+    {
+        ((TextView)findViewById(R.id.currTemp)).setText(String.valueOf(data.main.temp));
+        ((TextView)findViewById(R.id.hilo)).setText(String.valueOf(data.main.temp_min) + "/" +
+                String.valueOf(data.main.temp_max));
+
+        ((TextView)findViewById(R.id.description)).setText(data.weather.main);
+        ((TextView)findViewById(R.id.descriptionDetail)).setText(data.weather.description);
+        ((TextView)findViewById(R.id.location)).setText(data.name);
     }
 }

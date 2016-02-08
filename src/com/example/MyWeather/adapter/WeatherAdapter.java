@@ -17,7 +17,7 @@ import java.util.zip.Inflater;
 /**
  * Created by dmitchell on 2/4/2016.
  */
-public class WeatherAdapter extends ArrayAdapter<WeatherData> {
+public class WeatherAdapter {
 
     private WeatherTask mWeatherTask;
 
@@ -25,18 +25,18 @@ public class WeatherAdapter extends ArrayAdapter<WeatherData> {
 
     public WeatherAdapter(Context context, int viewId, WeatherData [] data)
     {
-        super(context, viewId, data);
+        //super(context, viewId, data);
 
         mWeatherTask = new WeatherTask(context);
     }
 
-    @Override
+    /*@Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         WeatherData data = getItem(position);
 
         LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.weather_info, parent);
+        View view = convertView.inflate(getContext(),R.layout.weather_info, parent);
 
         ((TextView)view.findViewById(R.id.currTemp)).setText(String.valueOf(data.main.temp));
         ((TextView)view.findViewById(R.id.hilo)).setText(String.valueOf(data.main.temp_min) + "/" +
@@ -47,7 +47,9 @@ public class WeatherAdapter extends ArrayAdapter<WeatherData> {
         ((TextView)view.findViewById(R.id.location)).setText("40508");
 
         return view;
-    }
+    }*/
+
+
 
 
 }
