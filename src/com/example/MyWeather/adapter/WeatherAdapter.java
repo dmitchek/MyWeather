@@ -1,33 +1,24 @@
 package com.example.MyWeather.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.TextView;
 
-import com.example.MyWeather.R;
 import com.example.MyWeather.data.WeatherData;
-import com.example.MyWeather.webservice.WeatherTask;
-
-import java.util.zip.Inflater;
+import com.example.MyWeather.webservice.NetworkTask;
 
 /**
  * Created by dmitchell on 2/4/2016.
  */
 public class WeatherAdapter {
 
-    private WeatherTask mWeatherTask;
+    private NetworkTask mNetworkTask;
 
-    private WeatherTask.OnDataListener mWeatherDataListener;
+    private NetworkTask.OnDataListener mWeatherDataListener;
 
     public WeatherAdapter(Context context, int viewId, WeatherData [] data)
     {
         //super(context, viewId, data);
 
-        mWeatherTask = new WeatherTask(context);
+        mNetworkTask = new NetworkTask(context);
     }
 
     /*@Override

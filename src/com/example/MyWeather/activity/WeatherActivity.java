@@ -6,25 +6,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.example.MyWeather.R;
-import com.example.MyWeather.adapter.WeatherAdapter;
 import com.example.MyWeather.data.WeatherData;
-import com.example.MyWeather.webservice.WeatherTask;
+import com.example.MyWeather.webservice.NetworkTask;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by dmitchell on 2/5/2016.
  */
 public class WeatherActivity extends Activity {
 
-    WeatherTask mWeatherTask;
+    NetworkTask mNetworkTask;
     private String mLocation;
     private int mCurrentPosition;
     private ArrayList<WeatherData> mLocationData;
@@ -32,7 +27,7 @@ public class WeatherActivity extends Activity {
     private static final int RIGHT = 1;
     private static final int LEFT = -1;
 
-    private class OnWeatherDataListener implements WeatherTask.OnDataListener
+    private class OnDataListener implements NetworkTask.OnDataListener
     {
         @Override
         public void populate(WeatherData [] data) {
@@ -43,7 +38,7 @@ public class WeatherActivity extends Activity {
         }
     }
 
-    private OnWeatherDataListener mWeatherDataListener;
+    private OnDataListener mWeatherDataListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,9 +51,9 @@ public class WeatherActivity extends Activity {
         Log.d("DKM", "Location: " + mLocation);
 
         // Get weather for given location
-        mWeatherDataListener = new OnWeatherDataListener();
-        mWeatherTask = new WeatherTask(getApplicationContext());
-        mWeatherTask.fetchWeatherData(mLocation, mWeatherDataListener);
+        mWeatherDataListener = new OnDataListener();
+        mNetworkTask = new NetworkTask(getApplicationContext());
+        mNetworkTask.fetchWeatherData(mLocation, mWeatherDataListener);
 
         mCurrentPosition = 0;
 

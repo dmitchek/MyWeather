@@ -11,7 +11,7 @@ import org.json.JSONObject;
 /**
  * Created by dmitchell on 2/4/2016.
  */
-public class WeatherTask extends AsyncTask<String, String, JSONObject> {
+public class NetworkTask extends AsyncTask<String, String, JSONObject> {
 
         private Context mContext;
         //private static final String URI = "http://api.openweathermap.org/data/2.5/weather";
@@ -25,7 +25,7 @@ public class WeatherTask extends AsyncTask<String, String, JSONObject> {
 
         private static final String TEST_DATA_MULTIPLE = "{\"cnt\":3,\"list\":[{\"coord\":{\"lon\":37.62,\"lat\":55.75},\"sys\":{\"type\":1,\"id\":7323,\"message\":0.0439,\"country\":\"RU\",\"sunrise\":1454821882,\"sunset\":1454854555},\"weather\":[{\"id\":802,\"main\":\"Clouds\",\"description\":\"scattered clouds\",\"icon\":\"03n\"}],\"main\":{\"temp\":0.5,\"pressure\":1019,\"temp_min\":0,\"temp_max\":1,\"humidity\":92},\"visibility\":10000,\"wind\":{\"speed\":7,\"deg\":210},\"clouds\":{\"all\":40},\"dt\":1454859000,\"id\":524901,\"name\":\"Moscow\"},{\"coord\":{\"lon\":30.52,\"lat\":50.43},\"sys\":{\"type\":1,\"id\":7348,\"message\":0.0375,\"country\":\"UA\",\"sunrise\":1454822598,\"sunset\":1454857246},\"weather\":[{\"id\":800,\"main\":\"Clear\",\"description\":\"Sky is Clear\",\"icon\":\"01n\"}],\"main\":{\"temp\":-1,\"pressure\":1026,\"humidity\":80,\"temp_min\":-1,\"temp_max\":-1},\"visibility\":10000,\"wind\":{\"speed\":5,\"deg\":170},\"clouds\":{\"all\":0},\"dt\":1454862600,\"id\":703448,\"name\":\"Kiev\"},{\"coord\":{\"lon\":-0.13,\"lat\":51.51},\"sys\":{\"type\":1,\"id\":5093,\"message\":0.0506,\"country\":\"GB\",\"sunrise\":1454830122,\"sunset\":1454864431},\"weather\":[{\"id\":801,\"main\":\"Clouds\",\"description\":\"few clouds\",\"icon\":\"02d\"}],\"main\":{\"temp\":7.98,\"pressure\":994,\"humidity\":61,\"temp_min\":7,\"temp_max\":9.4},\"visibility\":10000,\"wind\":{\"speed\":9.3,\"deg\":220},\"clouds\":{\"all\":20},\"dt\":1454863933,\"id\":2643743,\"name\":\"London\"}]}";
 
-        public WeatherTask(Context context)
+        public NetworkTask(Context context)
         {
             mContext = context;
         }
@@ -35,7 +35,7 @@ public class WeatherTask extends AsyncTask<String, String, JSONObject> {
             public void populate(WeatherData [] data);
         }
 
-        OnDataListener mOnDataListener;
+        protected OnDataListener mOnDataListener;
 
         public void fetchWeatherData(String params, OnDataListener listener)
         {

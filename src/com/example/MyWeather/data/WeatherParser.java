@@ -3,13 +3,14 @@ package com.example.MyWeather.data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.example.MyWeather.data.WeatherData;
 
 /**
  * Created by dmitchell on 2/6/2016.
  */
 public class WeatherParser {
 
-    public static final String TAG_WEATHER = "weather";
+    /*public static final String TAG_WEATHER = "weather";
     public static final String TAG_ID = "id";
     public static final String TAG_MAIN = "main";
     public static final String TAG_DESCRIPTION = "description";
@@ -24,29 +25,28 @@ public class WeatherParser {
     public static final String TAG_DEG = "deg";
     public static final String TAG_NAME = "name";
     public static final String TAG_COUNT = "cnt";
-    public static final String TAG_LIST = "list";
+    public static final String TAG_LIST = "list";*/
 
     public static WeatherData [] getWeatherData(JSONObject data) {
         WeatherData [] weatherData;
 
         try
         {
-
-
-            if(data.has(TAG_COUNT) &&  data.getInt(TAG_COUNT) > 1)
+            if(data.has(WeatherData.TAG_COUNT) &&  data.getInt(WeatherData.TAG_COUNT) > 1)
             {
-                int count = data.getInt(TAG_COUNT);
+                int count = data.getInt(WeatherData.TAG_COUNT);
                 weatherData = new WeatherData[count];
-                JSONArray locations = data.getJSONArray(TAG_LIST);
+                JSONArray locations = data.getJSONArray(WeatherData.TAG_LIST);
                 for(int i = 0; i < count; i++)
                 {
                     WeatherData newData = new WeatherData();
                     JSONObject curLocation = (JSONObject)locations.get(i);
-                    newData.weather = parseWeather(curLocation.getJSONArray(TAG_WEATHER).getJSONObject(0));
-                    newData.main = parseMain(curLocation.getJSONObject(TAG_MAIN));
-                    newData.wind = parseWind(curLocation.getJSONObject(TAG_WIND));
-                    newData.id = curLocation.getInt(TAG_ID);
-                    newData.name = curLocation.getString(TAG_NAME);
+                    newData.weather = parseWeather(curLocation.getJSONArray(WeatherData.TAG_WEATHER).getJSONObject(0));
+                    newData.main = parseMain(curLocation.getJSONObject(WeatherData.TAG_MAIN));
+                    newData.wind = parseWind(curLocation.getJSONObject(WeatherData.TAG_WIND));
+                    newData.id = curLocation.getInt(WeatherData.TAG_ID);
+                    newData.name = curLocation.getString(WeatherData.TAG_NAME);
+                    newData.country = curLocation.getJSONObject(WeatherData.TAG_SYS).getString(WeatherData.TAG_COUNTRY);
                     weatherData[i] = newData;
                 }
 
@@ -55,11 +55,11 @@ public class WeatherParser {
             {
                 weatherData = new WeatherData[1];
                 WeatherData newData = new WeatherData();
-                newData.weather = parseWeather(data.getJSONArray(TAG_WEATHER).getJSONObject(0));
-                newData.main = parseMain(data.getJSONObject(TAG_MAIN));
-                newData.wind = parseWind(data.getJSONObject(TAG_WIND));
-                newData.id = data.getInt(TAG_ID);
-                newData.name = data.getString(TAG_NAME);
+                newData.weather = parseWeather(data.getJSONArray(WeatherData.TAG_WEATHER).getJSONObject(0));
+                newData.main = parseMain(data.getJSONObject(WeatherData.TAG_MAIN));
+                newData.wind = parseWind(data.getJSONObject(WeatherData.TAG_WIND));
+                newData.id = data.getInt(WeatherData.TAG_ID);
+                newData.name = data.getString(WeatherData.TAG_NAME);
                 weatherData[0] = newData;
             }
 
@@ -79,10 +79,10 @@ public class WeatherParser {
 
         try
         {
-            weather.id = data.getInt(TAG_ID);
-            weather.main = data.getString(TAG_MAIN);
-            weather.description = data.getString(TAG_DESCRIPTION);
-            weather.icon = data.getString(TAG_ICON);
+            weather.id = data.getInt(WeatherData.TAG_ID);
+            weather.main = data.getString(WeatherData.TAG_MAIN);
+            weather.description = data.getString(WeatherData.TAG_DESCRIPTION);
+            weather.icon = data.getString(WeatherData.TAG_ICON);
 
         }catch(JSONException e){}
 
@@ -95,11 +95,12 @@ public class WeatherParser {
 
         try
         {
-            main.temp = data.getDouble(TAG_TEMP);
-            main.pressure = data.getDouble(TAG_PRESSURE);
-            main.humidity = data.getInt(TAG_HUMIDITY);
-            main.temp_max = data.getDouble(TAG_TEMP_MAX);
-            main.temp_min = data.getDouble(TAG_TEMP_MIN);
+            main.temp = data.getDouble(WeatherData.TAG_TEMP);
+            main.pressure = data.getDouble(WeatherData.TAG_PRESSURE);
+            main.humidity = data.getInt(WeatherData.TAG_HUMIDITY);
+            main.temp_max = data.getDouble(WeatherData.TAG_TEMP_MAX);
+            main.temp_min = data.getDouble(WeatherData.TAG_TEMP_MIN);
+
 
         }catch(JSONException e){}
 
@@ -112,8 +113,8 @@ public class WeatherParser {
 
         try
         {
-            wind.speed = data.getDouble(TAG_SPEED);
-            wind.deg = data.getDouble(TAG_DEG);
+            wind.speed = data.getDouble(WeatherData.TAG_SPEED);
+            wind.deg = data.getDouble(WeatherData.TAG_DEG);
         }catch (JSONException e){}
 
         return wind;
