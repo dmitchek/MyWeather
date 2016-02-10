@@ -1,12 +1,15 @@
-package com.example.MyWeather.activity;
+package com.example.MyWeather.fragment;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.example.MyWeather.R;
 import com.example.MyWeather.data.WeatherData;
 import com.example.MyWeather.webservice.NetworkTask;
@@ -15,9 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by dmitchell on 2/5/2016.
+ * Created by dave on 2/9/16.
  */
-public class WeatherActivity extends Activity {
+public class WeatherFragment extends Fragment {
 
     NetworkTask mNetworkTask;
     private String mLocation;
@@ -41,23 +44,36 @@ public class WeatherActivity extends Activity {
     private OnDataListener mWeatherDataListener;
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.weather_info, container, false);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.weather_info);
-
-        Intent intent = getIntent();
-
-        mLocation = intent.getStringExtra("location");
         Log.d("DKM", "Location: " + mLocation);
 
         // Get weather for given location
-        mWeatherDataListener = new OnDataListener();
-        mNetworkTask = new NetworkTask(getApplicationContext());
-        mNetworkTask.fetchWeatherData(mLocation, mWeatherDataListener);
+        //mWeatherDataListener = new OnDataListener();
+        //mNetworkTask = new NetworkTask(getApplicationContext());
+        //mNetworkTask.fetchWeatherData(mLocation, mWeatherDataListener);
 
-        mCurrentPosition = 0;
 
-        Button next = (Button)findViewById(R.id.next_location);
+
+
+
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+
+        Bundle args = getArguments();
+        loadDataIntoView((WeatherData)args.getSerializable("data"));
+
+        /*Button next = (Button)getView().findViewById(R.id.next_location);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +81,7 @@ public class WeatherActivity extends Activity {
             }
         });
 
-        Button previous = (Button)findViewById(R.id.previous_location);
+        Button previous = (Button)getView().findViewById(R.id.previous_location);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,11 +89,12 @@ public class WeatherActivity extends Activity {
             }
         });
         previous.setEnabled(false);
+        mCurrentPosition = 0;*/
     }
 
     private void loadView(int direction)
     {
-        int newPosition = mCurrentPosition + direction;
+        /*int newPosition = mCurrentPosition + direction;
         if((newPosition < mLocationData.size()) && (newPosition >= 0))
         {
             mCurrentPosition = newPosition;
@@ -86,29 +103,30 @@ public class WeatherActivity extends Activity {
 
         if(mCurrentPosition == 0)
         {
-            findViewById(R.id.previous_location).setEnabled(false);
-            findViewById(R.id.next_location).setEnabled(true);
+            getView().findViewById(R.id.previous_location).setEnabled(false);
+            getView().findViewById(R.id.next_location).setEnabled(true);
         }
         else if(mCurrentPosition == (mLocationData.size()-1))
         {
-            findViewById(R.id.previous_location).setEnabled(true);
-            findViewById(R.id.next_location).setEnabled(false);
+            getView().findViewById(R.id.previous_location).setEnabled(true);
+            getView().findViewById(R.id.next_location).setEnabled(false);
         }
         else
         {
-            findViewById(R.id.previous_location).setEnabled(true);
-            findViewById(R.id.next_location).setEnabled(true);
-        }
+            getView().findViewById(R.id.previous_location).setEnabled(true);
+            getView().findViewById(R.id.next_location).setEnabled(true);
+        }*/
     }
 
     private void loadDataIntoView(WeatherData data)
     {
-        ((TextView)findViewById(R.id.currTemp)).setText(String.valueOf(data.main.temp));
-        ((TextView)findViewById(R.id.hilo)).setText(String.valueOf(data.main.temp_min) + "/" +
-                String.valueOf(data.main.temp_max));
+        ((TextView)getView().findViewById(R.id.currTemp)).setText(String.valueOf(data.main.temp) + "°");
+        //((TextView)getView().findViewById(R.id.hilo)).setText(String.valueOf(data.main.temp_min) + "/" +
+        //        String.valueOf(data.main.temp_max));
 
-        ((TextView)findViewById(R.id.description)).setText(data.weather.main);
-        ((TextView)findViewById(R.id.descriptionDetail)).setText(data.weather.description);
-        ((TextView)findViewById(R.id.location)).setText(data.name);
+        ((TextView)getView().findViewById(R.id.description)).setText(data.weather.main);
+        ((TextView)getView().findViewById(R.id.descriptionDetail)).setText(data.weather.description);
+        ((TextView)getView().findViewById(R.id.location)).setText(data.name);
     }
+
 }

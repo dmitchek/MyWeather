@@ -32,12 +32,12 @@ public class WeatherParser {
 
         try
         {
-            if(data.has(WeatherData.TAG_COUNT) &&  data.getInt(WeatherData.TAG_COUNT) > 1)
+            if(data.has(WeatherData.TAG_LIST))
             {
-                int count = data.getInt(WeatherData.TAG_COUNT);
-                weatherData = new WeatherData[count];
                 JSONArray locations = data.getJSONArray(WeatherData.TAG_LIST);
-                for(int i = 0; i < count; i++)
+                int length = locations.length();
+                weatherData = new WeatherData[length];
+                for(int i = 0; i < length; i++)
                 {
                     WeatherData newData = new WeatherData();
                     JSONObject curLocation = (JSONObject)locations.get(i);
@@ -95,11 +95,11 @@ public class WeatherParser {
 
         try
         {
-            main.temp = data.getDouble(WeatherData.TAG_TEMP);
+            main.temp = data.getInt(WeatherData.TAG_TEMP);
             main.pressure = data.getDouble(WeatherData.TAG_PRESSURE);
             main.humidity = data.getInt(WeatherData.TAG_HUMIDITY);
-            main.temp_max = data.getDouble(WeatherData.TAG_TEMP_MAX);
-            main.temp_min = data.getDouble(WeatherData.TAG_TEMP_MIN);
+            main.temp_max = data.getInt(WeatherData.TAG_TEMP_MAX);
+            main.temp_min = data.getInt(WeatherData.TAG_TEMP_MIN);
 
 
         }catch(JSONException e){}

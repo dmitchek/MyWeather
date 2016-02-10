@@ -1,19 +1,18 @@
-package com.example.MyWeather.activity;
+package com.example.MyWeather.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,11 +22,9 @@ import com.example.MyWeather.data.WeatherData;
 import com.example.MyWeather.webservice.FetchLocationsTask;
 import com.example.MyWeather.webservice.NetworkTask;
 
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.example.MyWeather.fragment.WeatherFragment;
 
-public class WelcomeActivity extends Activity {
+public class LocationFragment extends Fragment {
 
     private UsersAdapter mAdapter;
     private String mCurrLocationStr;
@@ -38,8 +35,8 @@ public class WelcomeActivity extends Activity {
         public void populate(WeatherData[] data) {
             Log.d("DKM", "MAIN: Data received!");
 
-            final ArrayAdapter<WeatherData> adapter = new ArrayAdapter<WeatherData>(getApplicationContext(), R.layout.location_item, data);
-            mLocationsList = (ListView)findViewById(R.id.locations_list);
+            final ArrayAdapter<WeatherData> adapter = new ArrayAdapter<WeatherData>(getActivity().getApplicationContext(), R.layout.location_item, data);
+            mLocationsList = (ListView)getView().findViewById(R.id.locations_list);
             mLocationsList.setAdapter(adapter);
             mLocationsList.setVisibility(View.VISIBLE);
 
@@ -51,6 +48,19 @@ public class WelcomeActivity extends Activity {
                     //Intent intent = new Intent(getApplicationContext(), WeatherActivity.class);
                     //intent.putExtra("weatherData", );
                     //startActivity(intent);
+
+                    Bundle args = new Bundle();
+                    args.putSerializable("data", data);
+
+                    FragmentManager manager = getFragmentManager();
+                    FragmentTransaction transaction = manager.beginTransaction();
+
+                    WeatherFragment weatherFragment = new WeatherFragment();
+                    weatherFragment.setArguments(args);
+                    transaction.replace(R.id.content, weatherFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
                 }
             });
         }
@@ -63,9 +73,8 @@ public class WelcomeActivity extends Activity {
      * Called when the activity is first created.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome_screen);
+    public void onStart() {
+        super.onStart();
 
         /*Button getWeather = (Button)findViewById(R.id.get_weather);
         getWeather.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +94,7 @@ public class WelcomeActivity extends Activity {
 
         mCurrLocationStr = "";
 
-        final EditText location = (EditText)findViewById(R.id.location);
+        final EditText location = (EditText)getView().findViewById(R.id.location);
 
         mLocationDataListener = new OnDataListener();
         location.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -101,7 +110,7 @@ public class WelcomeActivity extends Activity {
                 {
 
                     //mWeatherDataListener = new OnDataListener();
-                    FetchLocationsTask mFetchLocationsTask = new FetchLocationsTask(getApplicationContext(),
+                    FetchLocationsTask mFetchLocationsTask = new FetchLocationsTask(getActivity().getApplicationContext(),
                             mLocationDataListener);
                     mFetchLocationsTask.execute(location.getText().toString());
 
@@ -110,6 +119,12 @@ public class WelcomeActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.welcome_screen, container, false);
     }
 
     @Override
