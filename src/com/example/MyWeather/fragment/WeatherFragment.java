@@ -1,6 +1,9 @@
 package com.example.MyWeather.fragment;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +19,9 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.example.MyWeather.R;
+import com.example.MyWeather.activity.MainActivity;
 import com.example.MyWeather.data.WeatherData;
+import com.example.MyWeather.utils.FragmentUtil;
 import com.example.MyWeather.webservice.FetchWeatherTask;
 import com.example.MyWeather.webservice.NetworkTask;
 
@@ -29,7 +34,7 @@ import java.util.Arrays;
 public class WeatherFragment extends Fragment {
 
     NetworkTask mNetworkTask;
-    private String mLocation;
+    private String [] mLocations;
     private int mCurrentPosition;
     private ArrayList<WeatherData> mLocationData;
     private Spinner mLocationSpinner;
@@ -60,6 +65,11 @@ public class WeatherFragment extends Fragment {
 
     private OnDataListener mWeatherDataListener;
 
+    public WeatherFragment()
+    {
+        setArguments(new Bundle());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -67,13 +77,9 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        Log.d("DKM", "Location: " + mLocation);
-
-
-        // Get weather for given location
-
     }
 
     @Override
@@ -82,11 +88,18 @@ public class WeatherFragment extends Fragment {
         super.onStart();
 
         Bundle args = getArguments();
+        ArrayList<WeatherData> savedLocations = (ArrayList<WeatherData>)args.getSerializable("savedLocations");
 
-        String [] locations = args.getStringArray("locations");
 
-        if(locations != null && locations.length > 0)
+
+        WeatherData data = (WeatherData)args.getSerializable("location");
+        mLocations = (String[])args.getSerializable("userLocations");
+
+
+
+        if(mLocations != null && mLocations.length > 0)
         {
+
             // Show loading screen and load locations
             getView().findViewById(R.id.weather_content).setVisibility(View.GONE);
             getView().findViewById(R.id.loading_screen).setVisibility(View.VISIBLE);
@@ -95,16 +108,17 @@ public class WeatherFragment extends Fragment {
             mNetworkTask = new FetchWeatherTask(getActivity().getApplicationContext(), mWeatherDataListener);
 
             String locationStr = "";
-            for(int i = 0; i < locations.length; i++)
+            for(int i = 0; i < mLocations.length; i++)
             {
-                locationStr +=locations[i];
+                locationStr +=mLocations[i];
 
-                if(i < locations.length-1)
+                if(i < mLocations.length-1)
                     locationStr += ",";
 
             }
 
             mNetworkTask.execute(locationStr);
+
         }
         else
         {
@@ -112,8 +126,8 @@ public class WeatherFragment extends Fragment {
             getView().findViewById(R.id.loading_screen).setVisibility(View.GONE);
 
             // We don't have locations data, lets assume we have a single WeatherData object then
-            WeatherData data = (WeatherData)args.getSerializable("data");
-            loadDataIntoView(data);
+
+            loadDataIntoView(mLocationData.get(mCurrentPosition));
         }
 
         ImageButton next = (ImageButton)getView().findViewById(R.id.next_location);
@@ -132,7 +146,67 @@ public class WeatherFragment extends Fragment {
             }
         });
         previous.setEnabled(false);
-        mCurrentPosition = 0;
+
+        Button addLocation = (Button)getView().findViewById(R.id.add_location);
+        addLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MainActivity activity = (MainActivity)getActivity();
+                FragmentUtil.switchFragment(getActivity(), activity.mWeatherFragment, R.id.content, activity.mLocationFragment);
+
+                //loadLocationSelection();
+
+            }
+        });
+
+        Button switchUser = (Button)getView().findViewById(R.id.switch_user);
+        switchUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = (MainActivity)getActivity();
+                FragmentUtil.switchFragment(getActivity(), activity.mWeatherFragment, R.id.content, activity.mUserFragment);
+            }
+        });
+    }
+
+    private void loadLocationSelection()
+    {
+        FragmentManager manager = getActivity().getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        transaction.replace(R.id.content, new FindLocationFragment());
+        transaction.remove(this);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden)
+    {
+        if(!hidden)
+        {
+            WeatherData data = (WeatherData)getArguments().getSerializable("data");
+            mLocationData.add(data);
+            mCurrentPosition = mLocationData.size() - 1;
+        }
+        /*else
+        {
+            mLocationData = new ArrayList<WeatherData>();
+            mLocationData.add(data);
+            mCurrentPosition = 0;
+        } */
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+
+        if(mLocationData != null && mLocationData.size() > 0)
+        {
+            getArguments().putSerializable("savedLocations", mLocationData);
+        }
     }
 
     private void loadView(int direction)
@@ -169,7 +243,7 @@ public class WeatherFragment extends Fragment {
 
         ((TextView)getView().findViewById(R.id.description)).setText(data.weather.main);
         ((TextView)getView().findViewById(R.id.descriptionDetail)).setText(data.weather.description);
-        ((TextView)getView().findViewById(R.id.location)).setText(data.name);
+        ((TextView)getView().findViewById(R.id.location_text)).setText(data.name);
     }
 
 }

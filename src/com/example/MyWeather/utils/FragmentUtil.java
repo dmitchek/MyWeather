@@ -14,23 +14,33 @@ import com.example.MyWeather.fragment.WeatherFragment;
  * Created by dave on 2/10/16.
  */
 public class FragmentUtil {
-    public static void switchFragment(Activity activity, Fragment fragment, Bundle args)
+    public static void switchFragment(Activity activity, Fragment curFragment, int layoutId, Fragment fragment, Bundle args)
     {
         FragmentManager manager = activity.getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        if(args != null) {
-            fragment = new WeatherFragment();
-            fragment.setArguments(args);
-        }
+        Bundle fragmentArguments = fragment.getArguments();
 
-        transaction.replace(R.id.content, fragment);
-        transaction.addToBackStack(null);
+        if(args != null)
+            fragmentArguments.putAll(args);
+
+        if(curFragment != null)
+            transaction.hide(curFragment);
+
+        if(fragment.isAdded())
+        {
+            transaction.show(fragment);
+        }
+        else {
+            transaction.add(layoutId, fragment);
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
     }
 
-    public static void switchFragment(Activity activity, Fragment fragment)
+    public static void switchFragment(Activity activity, Fragment curFragment, int layoutId, Fragment fragment)
     {
-        switchFragment(activity, fragment, null);
+        switchFragment(activity, curFragment, layoutId, fragment, null);
     }
+
 }
