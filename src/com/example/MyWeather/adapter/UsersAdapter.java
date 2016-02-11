@@ -40,7 +40,7 @@ public class UsersAdapter {
                 values);
     }
 
-    public String getUserLocations(String name)
+    public String [] getUserLocations(String name)
     {
         String [] columns = {UsersContract.UsersEntry.COLUMN_NAME_LOCATIONS};
         String [] selection = {name};
@@ -52,7 +52,9 @@ public class UsersAdapter {
         if(cursor.getCount() > 0)
         {
             cursor.moveToFirst();
-            return cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_NAME_LOCATIONS));
+            String locations = cursor.getString(cursor.getColumnIndex(UsersContract.UsersEntry.COLUMN_NAME_LOCATIONS));
+            String [] locationsArray = locations.split(",");
+            return locationsArray;
         }
         else
             return null;

@@ -15,13 +15,13 @@ import com.example.MyWeather.R;
 public class FetchWeatherInfo {
 
     private static final String OPEN_WEATHER_MAP_API =
-            "http://api.openweathermap.org/data/2.5/weather?zip=%s,us&units=imperial&APPID=%s";
+            "http://api.openweathermap.org/data/2.5/find?mode=json&type=like&q=%s&cnt=10&units=imperial&APPID=%s";
 
 
-    public static JSONObject getJSON(Context context, String location) {
+    public static JSONObject getJSON(Context context, String city) {
         try {
             String apikey = context.getString(R.string.api_key);
-            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, location, apikey));
+            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, city, apikey));
             HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
 

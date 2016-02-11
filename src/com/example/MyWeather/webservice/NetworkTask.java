@@ -13,7 +13,7 @@ import org.json.JSONObject;
  */
 public class NetworkTask extends AsyncTask<String, String, JSONObject> {
 
-        private Context mContext;
+        protected Context mContext;
         //private static final String URI = "http://api.openweathermap.org/data/2.5/weather";
 
         private static final String TEST_DATA = "{\"coord\":{\"lon\":-84.45,\"lat\":38.05}," +

@@ -3,6 +3,7 @@ package com.example.MyWeather.fragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -12,13 +13,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.MyWeather.R;
 import com.example.MyWeather.adapter.UsersAdapter;
 import com.example.MyWeather.data.WeatherData;
+import com.example.MyWeather.utils.FragmentUtil;
 import com.example.MyWeather.webservice.FetchLocationsTask;
 import com.example.MyWeather.webservice.NetworkTask;
 
@@ -45,22 +49,13 @@ public class LocationFragment extends Fragment {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     WeatherData data = adapter.getItem(position);
 
-                    //Intent intent = new Intent(getApplicationContext(), WeatherActivity.class);
-                    //intent.putExtra("weatherData", );
-                    //startActivity(intent);
-
                     Bundle args = new Bundle();
                     args.putSerializable("data", data);
 
-                    FragmentManager manager = getFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-
                     WeatherFragment weatherFragment = new WeatherFragment();
                     weatherFragment.setArguments(args);
-                    transaction.replace(R.id.content, weatherFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
 
+                    FragmentUtil.switchFragment(getActivity(), weatherFragment, args);
                 }
             });
         }
@@ -76,21 +71,45 @@ public class LocationFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        /*Button getWeather = (Button)findViewById(R.id.get_weather);
-        getWeather.setOnClickListener(new View.OnClickListener() {
+        final Button login = (Button)getView().findViewById(R.id.signin);
+        login.setOnClickListener(new View.OnClickListener() {
+            private boolean waitingForUser = false;
             @Override
             public void onClick(View v) {
-                String location = ((EditText)findViewById(R.id.location)).getText().toString();
-                //location.setText(mAdapter.getUserLocations("test"));
 
-                if(location.length() > 0) {
-                    Intent intent = new Intent(getApplicationContext(), WeatherActivity.class);
-                    intent.putExtra("location", location);
-                    startActivity(intent);
+                if(waitingForUser) {
+                    String user = ((EditText)getView().findViewById(R.id.user_name)).getText().toString();
+
+                    UsersAdapter usersAdapter = new UsersAdapter();
+                    usersAdapter.open(getActivity().getApplicationContext());
+
+                    String [] locations = usersAdapter.getUserLocations(user);
+                    if(locations != null && locations.length > 0)
+                    {
+                        Bundle args = new Bundle();
+                        args.putStringArray("locations", locations);
+                        Fragment fragment = new WeatherFragment();
+                        fragment.setArguments(args);
+
+                        FragmentUtil.switchFragment(getActivity(), fragment, args);
+                    }
+                    else
+                    {
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(),
+                                                     "user not found", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                }
+                else
+                {
+                    waitingForUser = true;
+                    login.setText("sign in");
+                    getView().findViewById(R.id.location).setVisibility(View.GONE);
+                    getView().findViewById(R.id.user_name).setVisibility(View.VISIBLE);
                 }
 
             }
-        });*/
+        });
 
         mCurrLocationStr = "";
 
@@ -108,8 +127,6 @@ public class LocationFragment extends Fragment {
                     || event == null
                     || event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
                 {
-
-                    //mWeatherDataListener = new OnDataListener();
                     FetchLocationsTask mFetchLocationsTask = new FetchLocationsTask(getActivity().getApplicationContext(),
                             mLocationDataListener);
                     mFetchLocationsTask.execute(location.getText().toString());

@@ -7,11 +7,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.example.MyWeather.R;
 import com.example.MyWeather.data.WeatherData;
+import com.example.MyWeather.webservice.FetchWeatherTask;
 import com.example.MyWeather.webservice.NetworkTask;
 
 import java.util.ArrayList;
@@ -26,6 +32,7 @@ public class WeatherFragment extends Fragment {
     private String mLocation;
     private int mCurrentPosition;
     private ArrayList<WeatherData> mLocationData;
+    private Spinner mLocationSpinner;
 
     private static final int RIGHT = 1;
     private static final int LEFT = -1;
@@ -37,7 +44,17 @@ public class WeatherFragment extends Fragment {
             Log.d("DKM", "Data received!");
 
             mLocationData = new ArrayList<WeatherData>(Arrays.asList(data));
-            loadDataIntoView(mLocationData.get(mCurrentPosition));
+
+            if(mLocationData.size() == 1)
+            {
+                getView().findViewById(R.id.prev_location).setVisibility(View.INVISIBLE);
+                getView().findViewById(R.id.next_location).setVisibility(View.INVISIBLE);
+            }
+
+            loadDataIntoView(mLocationData.get(0));
+
+            getView().findViewById(R.id.weather_content).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.loading_screen).setVisibility(View.GONE);
         }
     }
 
@@ -54,14 +71,8 @@ public class WeatherFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d("DKM", "Location: " + mLocation);
 
+
         // Get weather for given location
-        //mWeatherDataListener = new OnDataListener();
-        //mNetworkTask = new NetworkTask(getApplicationContext());
-        //mNetworkTask.fetchWeatherData(mLocation, mWeatherDataListener);
-
-
-
-
 
     }
 
@@ -71,9 +82,41 @@ public class WeatherFragment extends Fragment {
         super.onStart();
 
         Bundle args = getArguments();
-        loadDataIntoView((WeatherData)args.getSerializable("data"));
 
-        /*Button next = (Button)getView().findViewById(R.id.next_location);
+        String [] locations = args.getStringArray("locations");
+
+        if(locations != null && locations.length > 0)
+        {
+            // Show loading screen and load locations
+            getView().findViewById(R.id.weather_content).setVisibility(View.GONE);
+            getView().findViewById(R.id.loading_screen).setVisibility(View.VISIBLE);
+
+            mWeatherDataListener = new OnDataListener();
+            mNetworkTask = new FetchWeatherTask(getActivity().getApplicationContext(), mWeatherDataListener);
+
+            String locationStr = "";
+            for(int i = 0; i < locations.length; i++)
+            {
+                locationStr +=locations[i];
+
+                if(i < locations.length-1)
+                    locationStr += ",";
+
+            }
+
+            mNetworkTask.execute(locationStr);
+        }
+        else
+        {
+            getView().findViewById(R.id.weather_content).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.loading_screen).setVisibility(View.GONE);
+
+            // We don't have locations data, lets assume we have a single WeatherData object then
+            WeatherData data = (WeatherData)args.getSerializable("data");
+            loadDataIntoView(data);
+        }
+
+        ImageButton next = (ImageButton)getView().findViewById(R.id.next_location);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +124,7 @@ public class WeatherFragment extends Fragment {
             }
         });
 
-        Button previous = (Button)getView().findViewById(R.id.previous_location);
+        ImageButton previous = (ImageButton)getView().findViewById(R.id.prev_location);
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,12 +132,12 @@ public class WeatherFragment extends Fragment {
             }
         });
         previous.setEnabled(false);
-        mCurrentPosition = 0;*/
+        mCurrentPosition = 0;
     }
 
     private void loadView(int direction)
     {
-        /*int newPosition = mCurrentPosition + direction;
+        int newPosition = mCurrentPosition + direction;
         if((newPosition < mLocationData.size()) && (newPosition >= 0))
         {
             mCurrentPosition = newPosition;
@@ -103,19 +146,19 @@ public class WeatherFragment extends Fragment {
 
         if(mCurrentPosition == 0)
         {
-            getView().findViewById(R.id.previous_location).setEnabled(false);
+            getView().findViewById(R.id.prev_location).setEnabled(false);
             getView().findViewById(R.id.next_location).setEnabled(true);
         }
         else if(mCurrentPosition == (mLocationData.size()-1))
         {
-            getView().findViewById(R.id.previous_location).setEnabled(true);
+            getView().findViewById(R.id.prev_location).setEnabled(true);
             getView().findViewById(R.id.next_location).setEnabled(false);
         }
         else
         {
-            getView().findViewById(R.id.previous_location).setEnabled(true);
+            getView().findViewById(R.id.prev_location).setEnabled(true);
             getView().findViewById(R.id.next_location).setEnabled(true);
-        }*/
+        }
     }
 
     private void loadDataIntoView(WeatherData data)
