@@ -33,7 +33,6 @@ public class WeatherData implements Serializable {
     public static final String TAG_SPEED = "speed";
     public static final String TAG_DEG = "deg";
     public static final String TAG_NAME = "name";
-    public static final String TAG_COUNT = "count";
     public static final String TAG_LIST = "list";
     public static final String TAG_SYS = "sys";
     public static final String TAG_COUNTRY = "country";

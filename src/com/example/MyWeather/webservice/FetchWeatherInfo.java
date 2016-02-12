@@ -14,14 +14,30 @@ import com.example.MyWeather.R;
 
 public class FetchWeatherInfo {
 
-    private static final String OPEN_WEATHER_MAP_API =
-            "http://api.openweathermap.org/data/2.5/find?mode=json&type=like&q=%s&cnt=10&units=imperial&APPID=%s";
+    private static final String OPEN_WEATHER_URL = "http://api.openweathermap.org/data/2.5/";
+    private static final String FIND_BY_CITY =
+            "find?mode=json&type=like&q=%s&cnt=10";
+    private static final String FIND_BY_IDS =
+            "group?id=%s";
+    private static final String ENDING = "&units=imperial&APPID=%s";
 
 
-    public static JSONObject getJSON(Context context, String city) {
+    public static JSONObject getWeatherByCity(Context context, String city)
+    {
+        String uri = OPEN_WEATHER_URL + FIND_BY_CITY;
+        return getJSON(context, String.format(uri, city) + ENDING);
+    }
+
+    public static JSONObject getWeatherByIds(Context context, String ids)
+    {
+        String uri = OPEN_WEATHER_URL + FIND_BY_IDS;
+        return getJSON(context, String.format(uri, ids) + ENDING);
+    }
+
+    private static JSONObject getJSON(Context context, String uri) {
         try {
             String apikey = context.getString(R.string.api_key);
-            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, city, apikey));
+            URL url = new URL(String.format(uri, apikey));
             HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
 
@@ -35,12 +51,6 @@ public class FetchWeatherInfo {
             reader.close();
 
             JSONObject data = new JSONObject(json.toString());
-
-            // This value will be 404 if the request was not
-            // successful
-            if (data.getInt("cod") != 200) {
-                return null;
-            }
 
             connection.disconnect();
 

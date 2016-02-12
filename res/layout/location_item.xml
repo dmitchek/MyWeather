@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     android:text="Lexington"
     android:padding="5dp"
-    android:background="@drawable/button_bg"
+    android:background="@color/blue_sky"
  />
 

@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Lexington"
+        android:text="-------"
         android:id="@+id/location_text"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
@@ -36,7 +36,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="999"
+            android:text="---"
             android:textSize="150dp"
             android:layout_gravity="center_horizontal"
             android:id="@+id/currTemp"/>
@@ -51,14 +51,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="35dp"
-                android:text="Clear"
+                android:text="----"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/description"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
-                android:text="description"
+                android:text="------"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/descriptionDetail"/>
         </LinearLayout>
@@ -94,15 +94,27 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/save_user"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="save"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_alignParentBottom="true"
+            style="@style/CloudButton"
+            />
         <Button
             android:id="@+id/switch_user"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="switch user"
+            android:layout_weight="1"
             android:padding="10dp"
             android:layout_alignParentBottom="true"
             style="@style/CloudButton"
@@ -112,30 +124,11 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="add location"
-            android:layout_alignParentRight="true"
+            android:layout_weight="1"
             android:padding="10dp"
             android:layout_alignParentBottom="true"
             style="@style/CloudButton"
             />
-    </RelativeLayout>
-        </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/loading_screen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/loading_animation" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Getting Weather..."
-            android:id="@+id/textView"
-            android:layout_gravity="center_horizontal" />
     </LinearLayout>
+        </LinearLayout>
 </LinearLayout>

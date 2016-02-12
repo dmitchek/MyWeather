@@ -1,6 +1,5 @@
 package com.example.MyWeather.fragment;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.MyWeather.R;
 import com.example.MyWeather.activity.MainActivity;
@@ -28,38 +28,36 @@ import com.example.MyWeather.webservice.NetworkTask;
  */
 public class FindLocationFragment extends Fragment {
 
+    private MainActivity mActivity;
+
     private class OnDataListener implements NetworkTask.OnDataListener
     {
         @Override
         public void populate(WeatherData[] data) {
-            Log.d("DKM", "MAIN: Data received!");
 
-            final ArrayAdapter<WeatherData> adapter = new ArrayAdapter<WeatherData>(getActivity().getApplicationContext(), R.layout.location_item, data);
-            mLocationsList = (ListView)getView().findViewById(R.id.result_list);
-            mLocationsList.setAdapter(adapter);
-            mLocationsList.setVisibility(View.VISIBLE);
+            if(data != null && data.length > 0) {
+                final ArrayAdapter<WeatherData> adapter = new ArrayAdapter<WeatherData>(getActivity().getApplicationContext(), R.layout.location_item, data);
+                mLocationsList = (ListView) getView().findViewById(R.id.result_list);
+                mLocationsList.setAdapter(adapter);
+                mLocationsList.setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.action).setVisibility(View.INVISIBLE);
 
-            mLocationsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    WeatherData data = adapter.getItem(position);
+                mLocationsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        WeatherData data = adapter.getItem(position);
 
-                    Bundle args;
+                        mActivity.addLocation(data);
 
-                    MainActivity activity = (MainActivity)getActivity();
-                    args = activity.mLocationFragment.getArguments();
-
-                    if(args == null)
-                        args = new Bundle();
-
-                    args.putSerializable("location", data);
-
-                    //WeatherFragment weatherFragment = new WeatherFragment();
-                    //weatherFragment.setArguments(args);
-
-                    FragmentUtil.switchFragment(getActivity(), activity.mLocationFragment, R.id.content, activity.mWeatherFragment, args);
-                }
-            });
+                        FragmentUtil.switchFragment(getActivity(), R.id.content, mActivity.mWeatherFragment);
+                    }
+                });
+            }
+            else
+            {
+                Toast toast = Toast.makeText(mActivity, "location not found", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
     }
 
@@ -77,17 +75,19 @@ public class FindLocationFragment extends Fragment {
     {
         super.onStart();
 
+        mActivity = (MainActivity)getActivity();
+
+        getView().findViewById(R.id.existing_user).setVisibility(View.VISIBLE);
         final EditText location = (EditText)getView().findViewById(R.id.input);
-        final Button login = (Button)getView().findViewById(R.id.action);
+        final Button login = (Button)getView().findViewById(R.id.existing_user);
         location.setHint("city");
         login.setText("existing user");
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Fragment fragment = new UserFragment();
-                FragmentUtil.switchFragment(getActivity(), ((MainActivity)getActivity()).mLocationFragment, R.id.content, fragment);
+            Fragment fragment = new UserFragment();
+            FragmentUtil.switchFragment(mActivity, R.id.content, fragment);
             }
         });
 
@@ -103,17 +103,34 @@ public class FindLocationFragment extends Fragment {
                         || event == null
                         || event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
                 {
-                    FetchLocationsTask mFetchLocationsTask = new FetchLocationsTask(getActivity().getApplicationContext(),
-                            mLocationDataListener);
-                    mFetchLocationsTask.execute(location.getText().toString());
-
+                    searchLocation(location.getText().toString());
                 }
 
                 return true;
             }
         });
 
+        Button search = (Button)getView().findViewById(R.id.action);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchLocation(location.getText().toString());
+            }
+        });
+    }
 
+    private void searchLocation(String location)
+    {
+        if(location.length() > 0) {
+            FetchLocationsTask mFetchLocationsTask = new FetchLocationsTask(mActivity.getApplicationContext(),
+                    mLocationDataListener);
+            mFetchLocationsTask.execute(location);
+        }
+        else
+        {
+            Toast toast = Toast.makeText(mActivity, "please enter a location", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     @Override
